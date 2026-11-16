@@ -26,19 +26,19 @@
       <!-- Search Form -->
       <section class="search-section">
         <form id="searchForm" class="search-form">
-          <label for="donationId" class="input-label">กรอกเลขที่รายการบริจาค (Donation ID)</label>
+          <label for="searchQuery" class="input-label">กรอกเลขที่รายการบริจาค หรือ อีเมลที่ใช้บริจาค</label>
           <div class="input-group">
             <input
               type="text"
-              id="donationId"
-              name="donationId"
-              placeholder="เช่น 2611015AXXXX"
+              id="searchQuery"
+              name="searchQuery"
+              placeholder="เช่น 260000XXXXXX หรือ name@email.com"
               autocomplete="off"
               required
             />
             <button type="submit" id="searchBtn" class="btn-search">ค้นหา</button>
           </div>
-          <span class="input-hint">*ระบบจะแปลงตัวอักษรเป็นตัวพิมพ์ใหญ่ให้อัตโนมัติ</span>
+          <span class="input-hint">*กรอกอย่างใดอย่างหนึ่งเพื่อตรวจสอบสิทธิ์ของท่าน</span>
         </form>
       </section>
 
@@ -80,31 +80,22 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbxwrqYkHkS_ZbmAMa0POsIMOI-sJ2fP4vpInxztpkcbXd_8Yn0C5KwfmzmrHi_QNCQu/exec";
 
     const searchForm = document.getElementById("searchForm");
-    const donationInput = document.getElementById("donationId");
+    const searchInput = document.getElementById("searchQuery");
     const searchBtn = document.getElementById("searchBtn");
     const resultContainer = document.getElementById("resultContainer");
 
-    // แปลงตัวอักษรเป็นตัวพิมพ์ใหญ่อัตโนมัติขณะพิมพ์
-    donationInput.addEventListener("input", function () {
-      const start = this.selectionStart;
-      const end = this.selectionEnd;
-      this.value = this.value.toUpperCase();
-      this.setSelectionRange(start, end);
-    });
-
     searchForm.addEventListener("submit", async function (e) {
       e.preventDefault();
-      const id = donationInput.value.trim().toUpperCase();
-      if (!id) return;
+      const query = searchInput.value.trim();
+      if (!query) return;
 
-      // แสดงสถานะกำลังโหลด
       searchBtn.disabled = true;
       searchBtn.textContent = "กำลังค้นหา...";
       resultContainer.className = "result-container status-loading";
       resultContainer.innerHTML = `<p class="loading-text">กำลังตรวจสอบข้อมูลในระบบ กรุณารอสักครู่...</p>`;
 
       try {
-        const response = await fetch(`${API_URL}?id=${encodeURIComponent(id)}`);
+        const response = await fetch(`${API_URL}?q=${encodeURIComponent(query)}`);
         const data = await response.json();
         renderResult(data);
       } catch (error) {
@@ -123,62 +114,92 @@
     });
 
     function renderResult(data) {
-      if (data.status === "SUCCESS" && data.codes && data.codes.length > 0) {
-        const codeItemsHtml = data.codes
-          .map(
-            (code) => `
-            <div class="code-box">
-              <span class="code-text">${escapeHtml(code)}</span>
-              <button type="button" class="btn-copy" onclick="copyCode(this, '${escapeHtml(code)}')">
-                คัดลอก
-              </button>
-            </div>
-          `
-          )
+      if (data.status === "FOUND" && data.items && data.items.length > 0) {
+        const hasAnyCode = data.items.some((item) => item.status === "SUCCESS");
+        const countText = data.items.length > 1 ? `ทั้งหมด ${data.items.length} รายการ` : "1 รายการ";
+
+        const itemsHtml = data.items
+          .map((item) => {
+            const safeId = escapeHtml(item.donationId);
+
+            if (item.status === "SUCCESS") {
+              const codeBoxes = item.codes
+                .map((code) => {
+                  const safeCode = escapeHtml(code);
+                  return `
+                    <div class="code-box">
+                      <span class="code-text">${safeCode}</span>
+                      <button type="button" class="btn-copy" onclick="copyCode(this, '${safeCode}')">
+                        คัดลอก
+                      </button>
+                    </div>
+                  `;
+                })
+                .join("");
+
+              return `
+                <div class="donation-item-card item-success">
+                  <div class="item-meta">เลขที่รายการ: <strong>${safeId}</strong></div>
+                  <p class="code-label">รหัสลงทะเบียน (Code) ของคุณคือ:</p>
+                  <div class="codes-list">${codeBoxes}</div>
+                </div>
+              `;
+            } else if (item.status === "PENDING") {
+              return `
+                <div class="donation-item-card item-pending">
+                  <div class="item-meta">เลขที่รายการ: <strong>${safeId}</strong></div>
+                  <p class="item-status-text">⏳ <strong>อยู่ระหว่างดำเนินการจัดสรรโค้ด</strong><br/>ระบบได้รับข้อมูลการบริจาคเรียบร้อยแล้ว โค้ดจะอัปเดตเข้าระบบทุกวันจันทร์</p>
+                </div>
+              `;
+            } else {
+              return `
+                <div class="donation-item-card item-info">
+                  <div class="item-meta">เลขที่รายการ: <strong>${safeId}</strong></div>
+                  <p class="item-status-text">ℹ️ รายการนี้มียอดบริจาคต่ำกว่า 590 บาท จึงไม่เข้าเงื่อนไขรับโค้ดกิจกรรม</p>
+                </div>
+              `;
+            }
+          })
           .join("");
 
-        resultContainer.className = "result-container status-success";
+        const registerCtaHtml = hasAnyCode
+          ? `
+            <div class="register-box">
+              <p class="register-step">📌 <strong>ขั้นตอนถัดไป:</strong> นำรหัสนี้ไปสมัครวิ่งและรับของที่ระลึกฟรีได้ที่</p>
+              <a href="https://www.sansatan.com/event/kfcvr" target="_blank" rel="noopener noreferrer" class="btn-register">
+                ไปที่หน้าลงทะเบียนวิ่ง (sansatan.com)
+              </a>
+              <p class="register-note">*สามารถใช้ Code ลงทะเบียนได้ ถึงวันที่ 30 พฤศจิกายน 2569</p>
+            </div>
+          `
+          : "";
+
+        resultContainer.className = "result-container status-found";
         resultContainer.innerHTML = `
           <div class="result-header">
             <span class="status-icon">✅</span>
-            <h3>พบข้อมูลสิทธิ์เข้าร่วมกิจกรรมของคุณ</h3>
+            <h3>พบข้อมูลการบริจาค (${countText})</h3>
           </div>
-          <p class="code-label">รหัสลงทะเบียน (Code) ของคุณคือ:</p>
-          <div class="codes-list">${codeItemsHtml}</div>
-          <div class="register-box">
-            <p class="register-step">📌 <strong>ขั้นตอนถัดไป:</strong> นำรหัสนี้ไปสมัครวิ่งและรับของที่ระลึกฟรีได้ที่</p>
-            <a href="https://www.sansatan.com/event/kfcvr" target="_blank" rel="noopener noreferrer" class="btn-register">
-              ไปที่หน้าลงทะเบียนวิ่ง (sansatan.com)
-            </a>
-            <p class="register-note">*สามารถใช้ Code ลงทะเบียนได้ ถึงวันที่ 30 พฤศจิกายน 2569</p>
-          </div>
+          <div class="items-stack">${itemsHtml}</div>
+          ${registerCtaHtml}
         `;
-      } else if (data.status === "PENDING") {
-        resultContainer.className = "result-container status-pending";
+      } else if (data.status === "ERROR") {
+        resultContainer.className = "result-container status-error";
         resultContainer.innerHTML = `
           <div class="result-header">
-            <span class="status-icon">⏳</span>
-            <h3>อยู่ระหว่างดำเนินการจัดสรรโค้ด</h3>
+            <span class="status-icon">⚠️</span>
+            <h3>ไม่สามารถตรวจสอบข้อมูลได้</h3>
           </div>
-          <p class="result-desc">ระบบได้รับข้อมูลการบริจาคของคุณเรียบร้อยแล้ว โค้ดจะตัดรอบและอัปเดตเข้าระบบทุกวันจันทร์</p>
-        `;
-      } else if (data.status === "BELOW_MINIMUM") {
-        resultContainer.className = "result-container status-info";
-        resultContainer.innerHTML = `
-          <div class="result-header">
-            <span class="status-icon">ℹ️</span>
-            <h3>ไม่เข้าเงื่อนไขรับโค้ดกิจกรรม</h3>
-          </div>
-          <p class="result-desc">รายการนี้มียอดบริจาคต่ำกว่า 590 บาท จึงไม่เข้าเงื่อนไขรับโค้ดกิจกรรม</p>
+          <p class="result-desc">${escapeHtml(data.message || "กรุณาลองใหม่อีกครั้ง")}</p>
         `;
       } else {
         resultContainer.className = "result-container status-error";
         resultContainer.innerHTML = `
           <div class="result-header">
             <span class="status-icon">❌</span>
-            <h3>ไม่พบเลขที่รายการนี้ในระบบ</h3>
+            <h3>ไม่พบข้อมูลในระบบ</h3>
           </div>
-          <p class="result-desc">กรุณาตรวจสอบเลขที่รายการในอีเมลยืนยันการบริจาคอีกครั้ง หรือติดต่อแอดมินผ่าน LINE ด้านล่าง</p>
+          <p class="result-desc">กรุณาตรวจสอบเลขที่รายการหรืออีเมลในหลักฐานการบริจาคอีกครั้ง หรือติดต่อแอดมินผ่าน LINE ด้านล่าง</p>
         `;
       }
     }
