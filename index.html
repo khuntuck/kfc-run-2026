@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ตรวจสอบรหัสเข้าร่วมกิจกรรม | KFC Virtual Run 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="page-wrapper">
+    <div class="card">
+      <!-- Header Logos -->
+      <header class="card-header">
+        <div class="logo-group">
+          <img src="images/kfc-logo.jpg" alt="KFC Virtual Run" class="logo kfc-logo" />
+          <div class="logo-divider"></div>
+          <img src="images/taejai-logo.png" alt="เทใจ taejai.com" class="logo taejai-logo" />
+        </div>
+        <h1 class="title">ตรวจสอบรหัสเข้าร่วมกิจกรรม</h1>
+        <p class="subtitle">KFC Virtual Run 2026 เพื่อสนับสนุนโอกาสทางการศึกษาและอาชีพให้เด็กๆ</p>
+      </header>
+
+      <!-- Search Form -->
+      <section class="search-section">
+        <form id="searchForm" class="search-form">
+          <label for="donationId" class="input-label">กรอกเลขที่รายการบริจาค (Donation ID)</label>
+          <div class="input-group">
+            <input
+              type="text"
+              id="donationId"
+              name="donationId"
+              placeholder="เช่น 261115X13V4N"
+              autocomplete="off"
+              required
+            />
+            <button type="submit" id="searchBtn" class="btn-search">ค้นหา</button>
+          </div>
+          <span class="input-hint">*ระบบจะแปลงตัวอักษรเป็นตัวพิมพ์ใหญ่ให้อัตโนมัติ</span>
+        </form>
+      </section>
+
+      <!-- Result Area -->
+      <section id="resultContainer" class="result-container hidden" aria-live="polite"></section>
+
+      <!-- Terms & Conditions -->
+      <section class="terms-section">
+        <h2 class="terms-title">เงื่อนไขและหมายเหตุการรับสิทธิ์</h2>
+        <ul class="terms-list">
+          <li>
+            ร่วมบริจาคให้
+            <a href="https://taejai.com/th/project/chd-kfc-bucket-search" target="_blank" rel="noopener noreferrer" class="project-link">
+              โครงการ KFC Bucket search
+            </a>
+            ผ่านเทใจดอทคอม (วันนี้ - 25 พฤศจิกายน 2569)
+          </li>
+          <li>ทุกการบริจาค 590 บาท จะได้รับโค้ดลงทะเบียนกิจกรรมและรับของที่ระลึกฟรี โดยไม่มีค่าใช้จ่าย</li>
+          <li>สามารถใช้ Code ลงทะเบียนได้ถึงวันที่ <strong>30 พฤศจิกายน 2569</strong></li>
+          <li>Code จะตัดรอบส่งทุกวันอาทิตย์ และอัปเดตเข้าระบบภายในวันจันทร์</li>
+        </ul>
+      </section>
+
+      <!-- Footer Contact -->
+      <footer class="card-footer">
+        <p class="footer-text">พบปัญหาการใช้งาน หรือค้นหาข้อมูลไม่พบ?</p>
+        <a href="https://line.me/R/ti/p/@jox8100h" target="_blank" rel="noopener noreferrer" class="btn-line">
+          <svg class="line-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+          </svg>
+          ติดต่อแอดมินผ่าน LINE เทใจ
+        </a>
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    // นำ Web App URL จาก Google Apps Script มาวางแทนที่ข้อความด้านล่างนี้
+    const API_URL = "https://script.google.com/macros/s/AKfycbxwrqYkHkS_ZbmAMa0POsIMOI-sJ2fP4vpInxztpkcbXd_8Yn0C5KwfmzmrHi_QNCQu/exec";
+
+    const searchForm = document.getElementById("searchForm");
+    const donationInput = document.getElementById("donationId");
+    const searchBtn = document.getElementById("searchBtn");
+    const resultContainer = document.getElementById("resultContainer");
+
+    // แปลงตัวอักษรเป็นตัวพิมพ์ใหญ่อัตโนมัติขณะพิมพ์
+    donationInput.addEventListener("input", function () {
+      const start = this.selectionStart;
+      const end = this.selectionEnd;
+      this.value = this.value.toUpperCase();
+      this.setSelectionRange(start, end);
+    });
+
+    searchForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const id = donationInput.value.trim().toUpperCase();
+      if (!id) return;
+
+      // แสดงสถานะกำลังโหลด
+      searchBtn.disabled = true;
+      searchBtn.textContent = "กำลังค้นหา...";
+      resultContainer.className = "result-container status-loading";
+      resultContainer.innerHTML = `<p class="loading-text">กำลังตรวจสอบข้อมูลในระบบ กรุณารอสักครู่...</p>`;
+
+      try {
+        const response = await fetch(`${API_URL}?id=${encodeURIComponent(id)}`);
+        const data = await response.json();
+        renderResult(data);
+      } catch (error) {
+        resultContainer.className = "result-container status-error";
+        resultContainer.innerHTML = `
+          <div class="result-header">
+            <span class="status-icon">⚠️</span>
+            <h3>เกิดข้อผิดพลาดในการเชื่อมต่อ</h3>
+          </div>
+          <p class="result-desc">ไม่สามารถเชื่อมต่อฐานข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้งหรือติดต่อแอดมิน</p>
+        `;
+      } finally {
+        searchBtn.disabled = false;
+        searchBtn.textContent = "ค้นหา";
+      }
+    });
+
+    function renderResult(data) {
+      if (data.status === "SUCCESS" && data.codes && data.codes.length > 0) {
+        const codeItemsHtml = data.codes
+          .map(
+            (code) => `
+            <div class="code-box">
+              <span class="code-text">${escapeHtml(code)}</span>
+              <button type="button" class="btn-copy" onclick="copyCode(this, '${escapeHtml(code)}')">
+                คัดลอก
+              </button>
+            </div>
+          `
+          )
+          .join("");
+
+        resultContainer.className = "result-container status-success";
+        resultContainer.innerHTML = `
+          <div class="result-header">
+            <span class="status-icon">✅</span>
+            <h3>พบข้อมูลสิทธิ์เข้าร่วมกิจกรรมของคุณ</h3>
+          </div>
+          <p class="code-label">รหัสลงทะเบียน (Code) ของคุณคือ:</p>
+          <div class="codes-list">${codeItemsHtml}</div>
+          <div class="register-box">
+            <p class="register-step">📌 <strong>ขั้นตอนถัดไป:</strong> นำรหัสนี้ไปสมัครวิ่งและรับของที่ระลึกฟรีได้ที่</p>
+            <a href="https://www.sansatan.com/event/kfcvr" target="_blank" rel="noopener noreferrer" class="btn-register">
+              ไปที่หน้าลงทะเบียนวิ่ง (sansatan.com)
+            </a>
+            <p class="register-note">*สามารถใช้ Code ลงทะเบียนได้ ถึงวันที่ 30 พฤศจิกายน 2569</p>
+          </div>
+        `;
+      } else if (data.status === "PENDING") {
+        resultContainer.className = "result-container status-pending";
+        resultContainer.innerHTML = `
+          <div class="result-header">
+            <span class="status-icon">⏳</span>
+            <h3>อยู่ระหว่างดำเนินการจัดสรรโค้ด</h3>
+          </div>
+          <p class="result-desc">ระบบได้รับข้อมูลการบริจาคของคุณเรียบร้อยแล้ว โค้ดจะตัดรอบและอัปเดตเข้าระบบทุกวันจันทร์</p>
+        `;
+      } else if (data.status === "BELOW_MINIMUM") {
+        resultContainer.className = "result-container status-info";
+        resultContainer.innerHTML = `
+          <div class="result-header">
+            <span class="status-icon">ℹ️</span>
+            <h3>ไม่เข้าเงื่อนไขรับโค้ดกิจกรรม</h3>
+          </div>
+          <p class="result-desc">รายการนี้มียอดบริจาคต่ำกว่า 590 บาท จึงไม่เข้าเงื่อนไขรับโค้ดกิจกรรม</p>
+        `;
+      } else {
+        resultContainer.className = "result-container status-error";
+        resultContainer.innerHTML = `
+          <div class="result-header">
+            <span class="status-icon">❌</span>
+            <h3>ไม่พบเลขที่รายการนี้ในระบบ</h3>
+          </div>
+          <p class="result-desc">กรุณาตรวจสอบเลขที่รายการในอีเมลยืนยันการบริจาคอีกครั้ง หรือติดต่อแอดมินผ่าน LINE ด้านล่าง</p>
+        `;
+      }
+    }
+
+    function copyCode(button, code) {
+      navigator.clipboard.writeText(code).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "คัดลอกแล้ว ✓";
+        button.classList.add("copied");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.classList.remove("copied");
+        }, 2000);
+      });
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
